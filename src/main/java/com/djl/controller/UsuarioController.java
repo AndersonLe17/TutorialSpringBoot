@@ -2,7 +2,9 @@ package com.djl.controller;
 
 import com.djl.domain.Usuario;
 import com.djl.dto.UsuarioDTO;
+import com.djl.dto.UsuarioGetDTO;
 import com.djl.repository.UsuarioRepository;
+import com.djl.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,16 +17,13 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private UsuarioService usuarioService;
 
     @PostMapping("/")
     public ResponseEntity<?> insertUsuario(@RequestBody UsuarioDTO usuarioDTO){
-        Usuario usuario = new Usuario();
-        usuario.setNombre(usuarioDTO.getNombre());
-        usuario.setCorreo(usuarioDTO.getCorreo());
-        usuario.setFechaNacimiento(usuarioDTO.getFechaNacimiento());
-        usuario.setCelular(usuarioDTO.getCelular());
+        Usuario newUsuario = usuarioService.insertUsuario(usuarioDTO);
 
-        Usuario newUsuario = usuarioRepository.save(usuario);
         return ResponseEntity.ok(newUsuario);
     }
 
@@ -37,7 +36,7 @@ public class UsuarioController {
 
     @GetMapping("/{uid}")
     public ResponseEntity<?> getUsuarioById(@PathVariable(name = "uid") Integer uid) {
-        Usuario usuario = usuarioRepository.findById(uid).orElseThrow();
+        UsuarioGetDTO usuario = usuarioService.getUsuarioById(uid);
 
         return ResponseEntity.ok(usuario);
     }

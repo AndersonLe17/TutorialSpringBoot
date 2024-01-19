@@ -9,10 +9,9 @@ import java.util.Date;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-public class UsuarioDTO { // Data Transfer Object
+public class UsuarioGetDTO {
     private String nombre;
     private String correo;
-    private String password;
     private Date fechaNacimiento;
     private String celular;
 }
