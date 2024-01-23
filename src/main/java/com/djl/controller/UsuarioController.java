@@ -1,8 +1,8 @@
 package com.djl.controller;
 
 import com.djl.domain.Usuario;
-import com.djl.dto.UsuarioDTO;
-import com.djl.dto.UsuarioGetDTO;
+import com.djl.dto.request.UsuarioRequest;
+import com.djl.dto.response.UsuarioResponse;
 import com.djl.repository.UsuarioRepository;
 import com.djl.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,49 +16,42 @@ import java.util.List;
 public class UsuarioController {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
     private UsuarioService usuarioService;
 
     @PostMapping("/")
-    public ResponseEntity<?> insertUsuario(@RequestBody UsuarioDTO usuarioDTO){
-        Usuario newUsuario = usuarioService.insertUsuario(usuarioDTO);
+    public ResponseEntity<?> insertUsuario(@RequestBody UsuarioRequest usuarioDTO){
+        UsuarioResponse newUsuario = usuarioService.insertUsuario(usuarioDTO).orElseThrow(() -> new RuntimeException("Correo ya existente"));
 
         return ResponseEntity.ok(newUsuario);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> getAllUsuarios() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
-
-        return ResponseEntity.ok(usuarios);
-    }
-
     @GetMapping("/{uid}")
     public ResponseEntity<?> getUsuarioById(@PathVariable(name = "uid") Integer uid) {
-        UsuarioGetDTO usuario = usuarioService.getUsuarioById(uid);
+        UsuarioResponse usuario = usuarioService.getUsuarioById(uid);
 
         return ResponseEntity.ok(usuario);
     }
 
+    @GetMapping("/")
+    public ResponseEntity<?> getAllUsuarios() {
+        List<UsuarioResponse> usuarios = usuarioService.findAllUsuarios();
+
+        return ResponseEntity.ok(usuarios);
+    }
+
     @DeleteMapping("/{uid}")
     public ResponseEntity<?> deleteUsuarioById(@PathVariable(name = "uid") Integer uid) {
-        Usuario usuario = usuarioRepository.findById(uid).orElseThrow();
-        usuarioRepository.delete(usuario);
+        String respuesta = usuarioService.deleteUsuario(uid);
 
-        return ResponseEntity.ok("Usuario eliminado");
+        return ResponseEntity.ok(respuesta);
     }
 
     @PutMapping("/{uid}")
-    public ResponseEntity<?> updatedUsuario(@RequestBody UsuarioDTO usuarioDTO,
-                                           @PathVariable(name = "uid") Integer uid) {
-        Usuario usuario = usuarioRepository.findById(uid).orElseThrow();
-        usuario.setNombre(usuarioDTO.getNombre());
-        usuario.setCelular(usuarioDTO.getCelular());
+    public ResponseEntity<?> updatedUsuario(@RequestBody UsuarioRequest usuarioDTO,
+                                            @PathVariable(name = "uid") Integer uid) {
+        UsuarioResponse updatedUsuario = usuarioService.updatedUsuario(usuarioDTO, uid);
 
-        Usuario updatedUsuario = usuarioRepository.save(usuario);
-
-        return ResponseEntity.ok(updatedUsuario);
+        return ResponseEntity.ok(updatedUsuario == null? "No se puedo modificar" : updatedUsuario);
     }
 
 }

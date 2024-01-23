@@ -1,4 +1,4 @@
-package com.djl.dto;
+package com.djl.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,11 @@ import java.util.Date;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-public class UsuarioGetDTO {
+public class UsuarioRequest {
+
     private String nombre;
     private String correo;
+    private String password;
     private Date fechaNacimiento;
     private String celular;
 }

@@ -1,11 +1,19 @@
 package com.djl.service;
 
-import com.djl.domain.Usuario;
-import com.djl.dto.UsuarioDTO;
-import com.djl.dto.UsuarioGetDTO;
+import com.djl.dto.request.UsuarioRequest;
+import com.djl.dto.response.UsuarioResponse;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface UsuarioService {
-    Usuario insertUsuario(UsuarioDTO usuarioDTO);
+    Optional<UsuarioResponse> insertUsuario(UsuarioRequest usuarioDTO);
 
-    UsuarioGetDTO getUsuarioById(Integer uid);
+    UsuarioResponse getUsuarioById(Integer uid);
+
+    List<UsuarioResponse> findAllUsuarios();
+
+    String deleteUsuario(Integer uid);
+
+    UsuarioResponse updatedUsuario(UsuarioRequest usuarioDTO, Integer uid);
 }
